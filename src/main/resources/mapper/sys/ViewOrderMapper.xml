@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.view.dao.ViewOrderDao">
+
+	<resultMap type="com.hk.view.vo.ViewOrderFight" id="findandfight">
+		<association property="sysFight" column="fightId"
+		select="com.hk.view.dao.ViewFightDao.fightById" />
+	</resultMap>
+	
+	<!-- 根据id获取订单信息 -->
+	<select id="findFightById" resultType="com.hk.sys.entity.SysOrder">
+		select * from sys_order where id=#{id}
+	</select>
+
+	<!-- 找到订单详细信息 -->
+	<select id="findOrder" resultMap="findandfight">
+		select * from sys_order where username=#{username} and view=1
+		order by creatTime desc
+		limit #{startIndex},#{pageSize}
+	</select>
+	
+	<update id="updateStatus">
+		update sys_order set status=0
+		where fightId=#{fightId} and seatId=#{seatId} and status=1
+	</update>
+	
+	<!-- 用户删除订单 -->
+	<update id="deleteOrder">
+		update sys_order set view=0
+		where id=#{id}
+	</update>
+
+   <insert id="insertOrder" parameterType="com.hk.sys.entity.SysOrder" useGeneratedKeys="true"
+		keyProperty="id">
+   		insert into sys_order
+    	(id,username,name,identity,fightId,seatId,cost,creatTime,status)
+    	values
+    	(null,#{username},#{name},#{identity},#{fightId},#{seatId},#{cost},now(),1) 
+   </insert>
+   
+   <!-- 找到用户所有订单数 -->
+   <select id="findAll" resultType="int">
+   		select count(*) from sys_order where username=#{username} and view=1
+   </select>
+</mapper>

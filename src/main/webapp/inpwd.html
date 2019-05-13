@@ -1,0 +1,43 @@
+<div class='product-right-grids'>
+<div style=" margin: 30px;">
+<h3 style="margin-bottom: 10px">重设密码</h3>
+<div class="input-group">
+  <span class="input-group-addon" id="basic-addon">新的密码</span>
+  <input type="password" class="form-control" placeholder="" aria-describedby="basic-addon1" id="newpwd1" >
+</div>
+<div class="clearfix" style=" margin-bottom: 10px"> </div>
+<div class="input-group">
+  <span class="input-group-addon" id="basic-addon">确认密码</span>
+  <input type="password" class="form-control" placeholder="" aria-describedby="basic-addon1" id="newpwd2" >
+</div>
+<div class="clearfix" style=" margin-bottom: 10px"> </div>
+<button type="button" class="btn btn-primary" id="btn-save">保存</button>
+<button type="button" class="btn btn-light" id="btn-back">返回</button>
+</div>
+</div>
+<!-- js -->
+<script type="text/javascript">
+	$(function(){
+		$("#btn-save").click(save);
+		$("#btn-back").click(back);
+	});
+	//保存数据
+	function save(){
+		var params={
+			username:$("#userId").val(),
+			newpwd1:$("#newpwd1").val(),
+			newpwd2:$("#newpwd2").val()
+		}
+		console.log(params)
+		$.post("view/inpwd.do",params,function(result){
+			if(result.state==1){
+				alert("修改成功 请重新登录")
+				window.location.href ="index.html";
+			}else{
+				alert(result.message)
+			}
+		});
+	}
+	//返回
+	function back(){window.location.href ="resetpw.html";}
+</script>

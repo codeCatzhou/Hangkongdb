@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.view.dao.ViewOrderOutDao">
+	<select id="findSeatId" resultType="com.hk.view.vo.ViewOrderOut">
+		select * from sys_order_out
+		where fightId=#{fightId} and seatId like concat(#{seatId},"%")
+		limit 0,1
+	</select>
+	<!-- 退票添加 -->
+	<insert id="insertOrderOut">
+		insert into sys_order_out
+		(id,fightId,seatId)
+		values
+		(null,#{fightId},#{seatId})
+	</insert>
+	
+	<delete id="deleteById" >
+		delete from sys_order_out where id=#{id}
+	</delete>
+	
+	<select id="findCount" resultType="int">
+		select count(*) from sys_order_out
+		where fightId=#{fightId} and seatId like concat(#{seatId},"%")
+	</select>
+</mapper>

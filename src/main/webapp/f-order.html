@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>HK|sign</title>
+<!-- Custom Theme files -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Govihar Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+	Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //Custom Theme files -->
+<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+<link href="css/style.css" type="text/css" rel="stylesheet" media="all">
+<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
+<link type="text/css" rel="stylesheet" href="css/JFFormStyle-1.css" />
+<!-- js -->
+<script src="js/jquery.min.js"></script>
+<script src="js/modernizr.custom.js"></script>
+<!-- //js -->
+<!-- fonts -->
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,500italic,700italic,900,900italic' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
+<!-- //fonts -->	
+<script type="text/javascript">
+		$(document).ready(function () {
+			$('#horizontalTab').easyResponsiveTabs({
+				type: 'default', //Types: default, vertical, accordion           
+				width: 'auto', //auto or any width like 600px
+				fit: true   // 100% fit in a container
+			});
+		});
+	</script>
+<!--pop-up-->
+<script src="js/menu_jquery.js"></script>
+<!--//pop-up-->	
+</head>
+<body>
+	<!--header-->
+	<div class="header">
+		<div class="container">
+			<div class="header-grids">
+				<div class="logo">
+					<h1><a  href="index.html"><span>航空</span>售票网站</a></h1>
+				</div>
+				<!--navbar-header-->
+				<div class="header-dropdown">
+					<div class="emergency-grid">
+						<ul>
+							<li>联系电话 : </li>
+							<li class="call">+1 234 567 8901</li>
+						</ul>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			<div class="nav-top">
+				<div class="top-nav">
+					<span class="menu"><img src="images/menu.png" alt="" /></span>
+					<ul class="nav1">
+						<li><a href="index.html">首页</a></li>
+						<li><a href="fight.html">航班查询</a></li>
+						<li><a href="user.html">我的</a></li>
+					</ul>
+					<div class="clearfix"> </div>
+					<!-- script-for-menu -->
+							 <script> 
+							   $( "span.menu" ).click(function() {
+								 $( "ul.nav1" ).slideToggle( 300, function() {
+								 // Animation complete.
+								  });
+								 });
+							
+							</script>
+						<!-- /script-for-menu -->
+				</div>
+				<div class="dropdown-grids">
+						<div id="loginContainer"><a href="#" id="loginButton"><span>登录</span></a>
+							<div id="loginBox">                
+								<form id="loginForm">
+									<div class="login-grids">
+										<div class="login-grid-left">
+											<fieldset id="body">
+												<fieldset>
+													<label for="email">账号</label>
+													<input type="text" name="email" id="email">
+												</fieldset>
+												<fieldset>
+													<label for="password">密码</label>
+													<input type="password" name="password" id="password">
+												</fieldset>
+											</fieldset>
+											<input type="submit" id="login" value="登录">
+											<span><a href="#">忘记密码?</a></span>
+											<div class="or-grid">
+												<p>OR</p>
+											</div>
+											<div class="social-sits">
+												<div class="button-bottom">
+													<p>新用户? <a href="signup.html">注册</a></p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+	</div>
+	<!--//header-->
+	<!-- banner-bottom -->
+	<div class="banner-bottom">
+		<!-- container -->
+		<div class="container">
+			<div class="faqs-top-grids">
+				<div class="product-grids">
+					<div class="col-md-12 product-right">
+						<h3 id="title">航班信息</h3>
+						<!-- 航班信息 -->
+						<div class="input-group">
+						<span class="input-group-addon" id="basic-addon">航班编号</span>
+							<input type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="fightId" readonly="readonly">
+						</div>
+						<div class="input-group">
+						<span class="input-group-addon" id="basic-addon">出发地</span>
+							<input type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="fromAdd" readonly="readonly">
+						</div>
+						<div class="input-group">
+						<span class="input-group-addon" id="basic-addon">出发时间</span>
+							<input type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="startTime" readonly="readonly">
+						</div>
+						<div class="input-group">
+						<span class="input-group-addon" id="basic-addon">目的地</span>
+							<input type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="toAdd" readonly="readonly">
+						</div>
+						<div class="input-group">
+						<span class="input-group-addon" id="basic-addon">预计到达时间</span>
+							<input type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="arrTime" readonly="readonly">
+						</div>
+						<!-- /航班信息 -->
+						<!-- 客户信息 -->
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon">姓名</span> <input
+								type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="name">
+						</div>
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon">身份证号</span> <input
+								type="text" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="identity">
+						</div>
+
+						<label class="radio" style="margin-left: 20px;"> 
+							<input type="radio" name="seat" id="seat1" value="1">一等座</input>
+							<span style=" margin-left: 50px">剩余座位数：</span>
+							<span id="fnumbers" style=" color: red"></span>
+							<span style=" margin-left: 50px;">价格：￥</span>
+							<span id="fprice" style=" color: blue"></span>
+							<del id="zfprice" style=" color: gray;"></del>
+						</label> 
+						<label class="radio" style="margin-left: 20px;">
+							<input type="radio" name="seat" id="seat2" value="2">二等座
+							<span style=" margin-left: 50px">剩余座位数：</span>
+							<span id="snumbers" style=" color: red"></span>
+							<span style=" margin-left: 50px">价格：￥</span>
+							<span id="sprice" style=" color: blue"></span>
+							<del id="zsprice" style=" color: gray;"></del>
+						</label>
+						<label class="radio" style="margin-left: 20px;">
+							<input type="radio" name="seat" id="seat3" value="3">三等座
+							<span style=" margin-left: 50px">剩余座位数：</span>
+							<span id="onumbers" style=" color: red"></span>
+							<span style=" margin-left: 50px">价格：￥</span>
+							<span id="oprice" style=" color: blue"></span>
+							<del id="zoprice" style=" color: gray;"></del>
+						</label>
+						<!-- 客户信息 -->
+						<div class="input-group">
+							<span class="input-group-addon" id="basic-addon">密码</span> <input
+								type="password" class="form-control" placeholder=""
+								aria-describedby="basic-addon1" id="conpwd">
+						</div>
+						<div class="clearfix"> </div>
+						<div style=" margin-top: 10px">
+						<button type="button" class="btn btn-primary" id="btn-order">确认</button>
+						<button type="button" class="btn btn-light" id="btn-back">返回</button>
+						</div>
+					</div>
+					<div class="clearfix"> </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //banner-bottom -->
+	<!-- footer -->
+	<div class="footer">
+		<!-- container -->
+		<div class="container">
+			<div class="footer-top-grids">
+				<div class="footer-grids">
+					<div class="col-md-3 footer-grid">
+						<h4>产品</h4>
+						<ul>
+							<li><a href="fight.html">航班查询</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3 footer-grid">
+						<h4>公司相关</h4>
+						<ul>
+							<li><a href="about.html">关于我们</a></li>
+							<li><a href="faqs.html">常见问答</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3 footer-grid">
+						<h4>资源</h4>
+						<ul>
+							<li><a href="fight.html">航班预订</a></li>
+							<li><a href="user.html">取消预订</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3 footer-grid">
+						<h4>更多链接</h4>
+						<ul class="chf_footer_list">
+							<li><a href="fight.html">航班优惠票</a></li>
+						</ul>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+				<!-- news-letter -->
+				<div class="news-letter">
+					<div class="news-letter-grids">
+						<div class="col-md-4 news-letter-grid">
+							<p>
+								联系电话: <span>1234-5678-901</span>
+							</p>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				<!-- //news-letter -->
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- //footer -->
+	<div class="footer-bottom-grids">
+		<!-- container -->
+		<div class="container">
+				<div class="footer-bottom-top-grids">
+					<div class="copyright">
+						<p>Copyright &copy; 2015.Company name All rights reserved.</p>
+					</div>
+				</div>
+		</div>
+	</div>
+	<script defer src="js/jquery.flexslider.js"></script>
+	<script src="js/easyResponsiveTabs.js" type="text/javascript"></script>
+	<script src="js/jquery-ui.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>	
+	<script type="text/javascript">
+		$(function(){
+			doSession();
+			doInit();
+			$("#btn-back").click(function(){window.location.href ="fight.html"})
+			$("#btn-order").click(creatOrder)
+			userloading()
+		});
+		//验证是否有登录
+		function doSession(){
+			var session=sessionStorage.getItem("username");
+			if(session==null){
+				alert("请先登录")
+				window.location.href ="index.html";
+			}
+		}
+		//初始化信息
+		function doInit(){
+			$("#fightId").val(getQueryString("fightId"))
+			var fightId=getQueryString("fightId");
+			var username=sessionStorage.getItem("username");
+			var params={"fightId":fightId}
+			//加载航班信息
+			$.post("view/gofightUI.do",params,function(result){
+				if(result.state==1){
+		    		 $("#fromAdd").val(result.data.fromAdd) 
+		    		 $("#startTime").val(new Date(result.data.startTime).toLocaleString())
+		    		 $("#toAdd").val(result.data.toAdd)
+		    		 $("#arrTime").val(new Date(result.data.arrTime).toLocaleString())
+		    		 //判断折扣
+		    		 var fprice=result.data.sysSeat.fprice;
+		    		 var sprice=result.data.sysSeat.sprice;
+		    		 var oprice=result.data.sysSeat.oprice;
+		    		 var rebate=result.data.sysSeat.rebate
+		    		 if(rebate!=0){
+		    			 $("#zfprice").html("￥"+fprice); $("#zsprice").html("￥"+sprice); $("#zoprice").html("￥"+oprice)
+		    			 fprice=parseInt(fprice*(1-rebate));sprice=parseInt(sprice*(1-rebate));oprice=parseInt(oprice*(1-rebate));
+		    		 }
+		    		 //获取退单表中的座位总数
+		    		 $("#fnumbers").html(result.data.sysSeat.fnumbers)
+		    		 $("#snumbers").html(result.data.sysSeat.snumbers)
+		    		 $("#onumbers").html(result.data.sysSeat.onumbers)
+		    		 $("#fprice").html(fprice)
+		    		 $("#sprice").html(sprice)
+		    		 $("#oprice").html(oprice)
+		    		 var params={"fightId":fightId}
+		    		 //获取退单表中对应类型的座位数
+		    		 $.post("view/goOrderOutUI.do",params,function(result){
+		    			 if(result.state==1){
+		    				 $("#fnumbers").html(
+		    						 parseInt($("#fnumbers").html())
+		    						 +parseInt(result.data.countf)
+		    						 );
+		    				 $("#snumbers").html(
+		    						 parseInt($("#snumbers").html())
+		    						 +parseInt(result.data.counts)
+		    						 );
+		    				 $("#onumbers").html(
+		    						 parseInt($("#onumbers").html())
+		    						 +parseInt(result.data.counto)
+		    						 );
+		    			 }
+		    		 })
+		    	}else{
+		    		 alert("航班异常，等待修复");
+		    	}
+		    })
+		    //加载乘客信息
+		    params={"username":username}
+			$.post("view/readUser.do",params,function(result){
+				if(result.state==1){
+					$("#name").val(result.data.name);
+					$("#identity").val(result.data.identity);
+				}else{
+		    		 alert("用户异常，等待修复");
+		    	}
+			});
+		}
+		//替换登录组件
+		function userloading(){
+			var username=sessionStorage.getItem("username")
+			if(username!=null){
+				var input=$("#loginContainer");
+				input.empty();
+				input.append("<a id='userinput' href='user.html'><span>我的</span></a>"
+						+"<a id='userinput' href='javascript:quit()'><span>退出</span></a>")
+			}
+		}
+		//退出
+		function quit(){
+			alert("再见")
+			sessionStorage.clear();
+			window.location.href ="fight.html";
+		}
+		//从url截取数据
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}  else {
+				return null;
+			}
+		}
+		//提交订单信息
+		function creatOrder(){
+			var username=sessionStorage.getItem("username");
+			var name=$("#name").val();
+			var identity=$("#identity").val();
+			var reg=/^([0-9]{17}[0-9X]{1})|([0-9]{15})$/;
+			if(!reg.test(identity)){
+				alert("身份证号码错误，请确认");
+				return;
+			}
+			var fightId=$("#fightId").val();
+			var seatType=$("input[name='seat']:checked").val();
+			var cost;
+			//判断座位类型和获取价格
+			if(seatType==1){
+				cost=$("#fprice").html()
+			}else if(seatType==2){
+				cost=$("#sprice").html()
+			}else if(seatType==3){
+				cost=$("#oprice").html()
+			}else{
+				alert("请选择座位类型");
+				return;
+			}
+			//提交数据
+			var com=confirm("请确认信息："+"\n姓名："+name+"\n身份证号："+identity
+					+"\n航班编号："+$("#fightId").val()+"\n出发地："+$("#fromAdd").val()
+					+"\n出发时间："+$("#startTime").val()+"\n目的地："+$("#toAdd").val()
+					+"\n预计到达时间："+$("#arrTime").val()+"\n座位类型："+seatType+" 等座"
+					+"\n价格：￥"+cost)
+			if(com){
+				var password= $("#conpwd").val();
+				console.log(password)
+				var params={"username":username,"name":name,"identity":identity,
+						"fightId":fightId,"cost":cost,"seatType":seatType,"password":password}
+				$.post("view/creatOrder.do",params,function(result){
+					if(result.state==1){
+						alert("预订成功")
+						window.location.href ="user.html";
+					}else{
+			    		 alert(result.message+" 预订失败");
+			    	}
+				});
+			}
+		}
+	</script>
+</body>
+</html>

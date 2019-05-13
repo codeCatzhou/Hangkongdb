@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.view.dao.ViewUserDao">
+   <select id="checkUser" resultType="int">
+   		select count(*) from sys_user where username=#{username} and status=1
+   </select>
+   
+   <insert id="insertUser" parameterType="com.hk.sys.entity.SysUser">
+   		insert into sys_user
+    	(id,username,password,salt,name,gender,identity,tel,email,status)
+    	values
+    	(null,#{username},#{password},#{salt},#{name},null,#{identity},#{tel},#{email},1) 
+   </insert>
+   
+   <select id="findByUsername" resultType="com.hk.sys.entity.SysUser">
+   		select * from sys_user where username=#{username}
+   </select>
+   
+   <update id="upByUserbname" parameterType="com.hk.sys.entity.SysUser">
+   		update sys_user set
+		name=#{name},gender=#{gender},identity=#{identity},tel=#{tel},email=#{email}
+		where username=#{username}
+   </update>
+   
+   <update id="updatePwd">
+   		update sys_user set
+		password=#{password},salt=#{salt}
+		where username=#{username}
+   </update>
+   
+   <!-- 用于重设密码 -->
+   <select id="findUser" resultType="com.hk.sys.entity.SysUser">
+   		select * from sys_user where username=#{username} and status=1
+   </select>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.sys.dao.SysUserDao">
+   <!-- 查询所有记录 -->
+   <select id="findAllUser" resultType="com.hk.sys.entity.SysUser">
+   		select * from sys_user
+   		<include refid="find"/>
+   		limit #{startIndex} ,#{pageSize}
+   </select>
+   
+   <!-- 根据id删除 -->
+   <delete id="deleteUserByIds">
+   		delete from sys_user where id in
+   		<foreach collection="ids" open="(" separator="," close=")" item="id">#{id}</foreach>
+   </delete>
+   
+   	<!-- 分页 -->
+	<select id="getRowCount" resultType="int">
+          select count(*) from sys_user
+          <include refid="find"/>
+    </select>
+    <!-- 更新用户状态 -->
+    <update id="updateStatus">
+    	update sys_user set status=#{status} where username=#{username}
+    </update>
+    <!-- 添加用户 -->
+    <insert id="insertUser" parameterType="com.hk.sys.entity.SysUser">
+    	insert into sys_user
+    	(id,username,password,salt,name,gender,identity,tel,email,status)
+    	values
+    	(null,#{username},#{password},#{salt},#{name},#{gender},#{identity},#{tel},#{email},1)
+    </insert>
+    
+    <select id="findUser" resultType="int">
+    	select count(*) from sys_user where username=#{username}
+    </select>
+   
+   <sql id="find">
+   		<where>
+   			<if test="username !=null and username !=''">
+   				username like concat("%",#{username},"%")
+   			</if>
+   		</where>
+   </sql>
+</mapper>

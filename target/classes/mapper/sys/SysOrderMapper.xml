@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.sys.dao.SysOrderDao">
+   <!-- 查询所有记录 -->
+   <select id="fingAllByUsername" resultType="com.hk.sys.entity.SysOrder">
+   		select * from sys_order
+   		<include refid="find"/>
+   		limit #{startIndex} ,#{pageSize}
+   </select>
+   
+   <select id="findByFightId" resultType="int">
+		select count(*) from sys_order where fightId=#{fightId}
+	</select>
+	
+	<!-- 删除 -->
+	<delete id="deleteOrders">
+		delete from sys_order 
+		where id in
+		<foreach collection="ids" open="(" separator="," close=")" item="id">#{id}</foreach>
+	</delete>
+
+   	<!-- 分页 -->
+	<select id="getRowCount" resultType="int">
+          select count(*) from sys_order
+          <include refid="find"/>
+    </select>
+   
+   <sql id="find">
+   		<where>
+   			<if test="username !=null and username !=''">
+   				username=#{username}
+   			</if>
+   		</where>
+   </sql>
+</mapper>

@@ -1,0 +1,201 @@
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<div class="layui-tab">
+			<blockquote class="layui-elem-quote news_search">
+
+				<div class="layui-inline">
+					<div class="layui-input-inline">
+						<input id="username" placeholder="请输入用户名"
+							class="layui-input search_input" type="text">
+					</div>
+					<a id="checkname" class="layui-btn btn-search">查询</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn layui-btn-normal btn-add">添加</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn layui-btn-danger btn-delete">删除</a>
+				</div>
+			</blockquote>
+
+			<div
+				class="layui-tab-content larry-personal-body clearfix mylog-info-box">
+				<!-- 操作日志 -->
+				<div class="layui-tab-item layui-field-box layui-show">
+					<table class="layui-table table-hover" lay-even="" lay-skin="nob">
+						<thead>
+							<tr>
+								<th><input type="checkbox" id="checkAll"></th>
+								<th>ID</th>
+								<th>用户名</th>
+								<th>真实姓名</th>
+								<th>性别</th>
+								<th>有效证件号</th>
+								<th>联系电话</th>
+								<th>邮件地址</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbodyId">
+							<tr>
+								<td colspan="7">数据加载中...</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="larry-table-page clearfix">
+						<div id="pageId" class="pageId"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="common/layui/layui.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pageId").load("doPageUI.do", function() {
+			doGetObjects();
+		});
+		//查询
+		$(".layui-inline").on("click", ".btn-search", doGetObjects);
+		//点击添加
+		$(".layui-inline").on("click", ".btn-add", doLoadEditUI)
+		//状态修改
+		$("#tbodyId").on("click", ".btn-status", doStatusId);
+		//删除
+		$(".layui-inline").on("click", ".btn-delete", doDeleteUI);
+	});
+	
+	//删除用户
+	function doDeleteUI(){
+		console.log("sss")
+		//1.url
+		var url ="user/dodeleteUI.do"
+		//2.params
+		var ids=doGetCheckedIds();
+		var params={"ids":ids.toString()}
+		//3.send request
+		var mos =confirm("确定要删除选中的"+ids.length+"条数据？");
+		if(mos == true){
+			$.post(url,params,function(result){
+				if (result.state == 1) {
+					alert(result.message);
+					doGetObjects();
+				} else{
+					alert(result.message);
+				}
+			});
+		}else{
+			alert("操作已取消");
+		}
+	}
+	// 获取用户选中的checked对应的id
+	function doGetCheckedIds(){
+		//1.定义数组,用于存储选中的checked的值
+		var array=[];
+		//2.获取tbody中所有的checkbox
+		$("#tbodyId input[type='checkbox']").each(function(){
+			// .each()迭代所有的CheckBox
+			if($(this).prop("checked")){
+				array.push($(this).val());
+			}
+		});
+		return array;
+	}
+	
+	//修改用户账号状态
+	function doStatusId() {
+		var btn = $(this);//this执行调用dom对象
+		var user = btn.parents("tr").data("rowData");
+		var username = user.username;
+		var status = user.status;
+		//2.构建url,参数对象
+		var url = "user/doStatus.do";
+		var params = {
+			"username" : username,
+			"status" : status ? 0 : 1
+		}
+		console.log(params)
+		//3.发送异步请求,更新数据
+		$.post(url, params, function(result) {
+			if (result.state == 1) {
+				alert(result.message);
+				doEditRow(btn,user.status);
+			} else {
+				alert(result.message);
+			}
+		})
+	}
+	function doEditRow(obj,status){
+		   //1.修改内容
+		   $(obj).html(status?"启用":"禁用");
+		   var tr=$(obj).parents("tr");
+		   tr.find("td:eq(8)").text(status?"禁用":"启用");
+		   //3.获取当前行tr对象，然后重新绑定新的值
+		   var user=tr.data("rowData")
+		   user.status=status?0:1;
+		   tr.data("rowData",user);
+	   }
+	
+	//加载添加页面
+	function doLoadEditUI(){
+		$("#mainContentId").removeData();
+		var url = "user/doUserEditUI.do"
+		$("#mainContentId").load(url)
+	}
+
+	//回显数据
+	function doGetObjects() {
+		var url = "user/doFindPageObjects.do";
+		var pageCurrent = $("#pageId").data("pageCurrent");
+		if (!pageCurrent)
+			pageCurrent = 1;
+		var params = {
+			"pageCurrent" : pageCurrent
+		};
+		params.username = $("#username").val().trim();
+		$.getJSON(url, params, function(result) {
+			doHandleResponseResult(result);
+		});
+	}
+	function doHandleResponseResult(result) {
+		if (result.state) {
+			doSetTableBodyRows(result.data.records);
+			doSetPagination(result.data);
+		} else {
+			alert(result.message);
+		}
+	}
+	function doSetTableBodyRows(records) {
+		//1.获取body对象,并清空内容
+		var tBody = $("#tbodyId");
+		tBody.empty();
+		//2.迭代records元素,将内容添加到body
+		for ( var i in records) {
+			//2.1.创建tr对象
+			var tr = $("<tr></tr>");
+			tr.data("rowData", records[i]);
+			//2.2创建td元素
+			var tds = doCreateTds(records[i]);
+			//2.3将tr追加到tr中
+			tr.append(tds);
+			//2.4将tr追加到tbody中
+			tBody.append(tr);
+		}
+	}
+	function doCreateTds(data) {
+		var tds = "<td><input type='checkbox' class='cBox' name='checkItem' value='"+data.id+"'/></td>"
+				+ "<td>"+ data.id+ "</td>"
+				+ "<td>"+ data.username+ "</td>"
+				+ "<td>"+ data.name+ "</td>"
+				+ "<td>"+ (data.gender?'男':'女')+ "</td>"
+				+ "<td>"+ data.identity+ "</td>"
+				+ "<td>"+ data.tel+ "</td>"
+				+ "<td>"+ data.email+ "</td>"
+				+ "<td>"+ (data.status ? '启用' : '禁用')+ "</td>"
+				+ "<td><button type='button' class='btn btn-default btn-status'>"
+				+ (data.status ? '禁用' : '启用') + "</button></td>";
+		return tds;
+	}
+</script>

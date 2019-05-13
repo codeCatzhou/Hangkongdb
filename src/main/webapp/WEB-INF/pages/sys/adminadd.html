@@ -1,0 +1,74 @@
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<header class="larry-personal-tit">
+			<h2 style=" font-size: 20px;margin: 20px">添加管理账号</h2>
+		</header><!-- /header -->
+		<div class="larry-personal-body clearfix changepwd">
+			<form class="layui-form col-lg-4" method="post" action="">
+			 	<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">  
+					  	<input type="text" name="title"  autocomplete="off"  class="layui-input username" placeholder="请输入账号名">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">密码</label>
+					<div class="layui-input-block">  
+					  	<input type="password" name="title"  autocomplete="off"  class="layui-input pwd1" value="" placeholder="请输入密码">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">确认密码</label>
+					<div class="layui-input-block">  
+					  	<input type="password" name="title"  autocomplete="off"  class="layui-input pwd2" value="" placeholder="请输入确认密码">
+					</div>
+				</div>
+				
+			</form>
+		</div>
+	</div>
+	<div class="layui-input-block">
+			<button class="layui-btn btn-save">立即提交</button>
+			<button class="layui-btn btn-primary">重置</button>
+	</div>
+	<div class="layui-input-block" style=" margin-top: 10px">
+			<button class="layui-btn btn-back" style=" background: #CCCCCC;color: black;">返回</button>
+	</div>
+</section>
+<script type="text/javascript" src="common/layui/layui.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$(".layui-input-block").on("click", ".btn-save", doSaveOrUpdate)
+		$(".layui-input-block").on("click", ".btn-primary", removeDate)
+		$(".layui-input-block").on("click", ".btn-back", doCancel)
+	})
+	//提交数据
+	function doSaveOrUpdate(){
+		var params={
+			username:$(".username").val(),
+			pwd1:$(".pwd1").val(),
+			pwd2:$(".pwd2").val()
+		}
+		var url="admin/addAdmin.do";
+		$.post(url,params,function(result){
+			console.log(result)
+				if(result.state==1){
+					 alert(result.message);
+					 doCancel();
+				 }else{
+					alert(result.message);
+				 }
+		})
+	}
+	//返回
+	function doCancel(){
+		$("#mainContentId").load("admin/doAdminEditUI.do");
+	}
+	//重置输入框
+	function removeDate(){
+		$(".pwd1").val("");
+		$(".pwd2").val("");
+		$(".username").val("");
+	}
+	
+</script>

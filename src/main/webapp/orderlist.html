@@ -1,0 +1,112 @@
+<div class='product-right-grids'>
+	<span>数据加载中。。。</span>
+</div>
+<div class="clearfix"></div>
+<div id="pageId" class="box-footer clearfix"></div>
+<!-- js -->
+<script type="text/javascript">
+$(function(){
+	$("#pageId").load("view/doPageUI.do",function(){
+		doGetObjects();
+	 });
+	//退票
+	$(".product-right").on("click", "#return",function(){
+		var orderId=$(this).parents("div").prev("div").children("#orderId").html();
+		orderId=orderId.substr(4);
+		reticket(orderId);
+	});
+	//删除订单
+	$(".product-right").on("click", "#delete",function(){
+		var orderId=$(this).parents("div").prev("div").children("#orderId").html();
+		orderId=orderId.substr(4);
+		deleteOrder(orderId);
+	});
+})
+//退票
+function reticket(orderId){
+	if(confirm("是否退票(该操作不可逆)")){
+		var params={"orderId":orderId};
+		$.post("view/reticket.do",params,function(result){
+			if (result.state == 1) {
+				alert(result.message);
+				location.href="user.html";
+			} else {
+				alert(result.message);
+			}
+		})
+	}
+}
+//删除订单
+function deleteOrder(orderId){
+	if(confirm("是否删除该订单")){
+		var params={"orderId":orderId};
+		console.log(params)
+		$.post("view/deleteOrder.do",params,function(result){
+			if (result.state == 1) {
+				alert(result.message);
+				//location.href="user.html";
+				$(".product-right").load("orderlist.html");
+			} else {
+				alert(result.message);
+			}
+		})
+	}
+}
+//查找订单
+function doGetObjects(){
+	var pageCurrent = $("#pageId").data("pageCurrent");
+	if (!pageCurrent)
+		pageCurrent = 1;
+	var params={
+		username:sessionStorage.getItem("username"),
+		pageCurrent:pageCurrent
+	}
+	$.post("view/goFindOrder.do",params,function(result){
+		doHandleResponseResult(result);
+	});
+}
+function doHandleResponseResult(result) {
+	if (result.state == 1) {
+		doSetTableBodyRows(result.data.records);
+		doSetPagination(result.data);
+	} else {
+		alert(result.message);
+	}
+}
+function doSetTableBodyRows(records) {
+	//1.获取body对象,并清空内容
+	var tBody = $(".product-right-grids");
+	tBody.empty();
+	//2.迭代records元素,将内容添加到body
+	for ( var i in records) {
+		//2.1.创建对象
+		var tr = $("<div class='product-right-grids'></div>");
+		tr.data("rowData", records[i]);
+		//2.2创建元素
+		var tds = doCreateTds(records[i]);
+		//2.3将tr追加到tr中
+		tr.append(tds);
+		//2.4将tr追加到tbody中
+		tBody.append(tr);
+	}
+}
+function doCreateTds(data) {
+	var tds = "<div style=' margin: 30px'><div class='product-right-top'>"
+			+"<div class='col-md-12'><div class='col-md-6 p-right-left'>"
+			+"<h3 style=' color: blue;' id='orderId'>订单号："+data.id+"</h3>"
+			+"<h2>from："+data.sysFight.fromAdd+"</h2>"
+			+"<h4>出发时间："+new Date(data.sysFight.startTime).toLocaleString()+"</h4>"
+			+"<h2>to："+data.sysFight.toAdd+"</h2>"
+			+"<h4>预计到达时间："+new Date(data.sysFight.arrTime).toLocaleString()+"</h4>"
+			+"<h2 style=' color: red; margin-top: 20px'>价格：￥"+data.cost+"</h2>"
+			+"<h4 style=' color: red; margin-top: 20px'>订单状态："+(data.status?"完成":"失效")+"</h4>"
+			+"</div><div class='col-md-6 p-right-right'>"
+			+"<h6 id='fightId'>航班编号:"+data.sysFight.fightId+"</h6>"
+			+"<span class='p-offer' id='seatId'>座位号: "+data.seatId+"</span><div class='clearfix'> </div>"
+			+"<span class='p-offer'>下单时间: "+new Date(data.creatTime).toLocaleString()+"</span><div class='clearfix'> </div>"
+			+"<button type='button' class='book btn btn-success' id='return'>退票</button>"
+			+"<button type='button' class='book btn btn-danger' id='delete' style=' margin-left:10px'>删除</button>"
+			+"</div><div class='clearfix'> </div></div><div class='clearfix'> </div></div></div>";
+	return tds;
+}
+</script>

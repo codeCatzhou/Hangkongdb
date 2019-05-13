@@ -1,0 +1,181 @@
+<body>
+	<form>
+		<div>
+			<label class="layui-form-label">导游</label>
+			<select id="xuanname" class="layui-input emp-xuan" style="width: 120px;margin-bottom: 20px;margin-top: 20px">
+			<option value=""></option>
+			</select>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">目前团人数：</label>
+				<div class="layui-input-inline">
+					<input id="nowcount" class="layui-input newsAuthor" lay-verify="required"
+						placeholder="请输入目前团人数" type="text">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">团人数上限</label>
+				<div class="layui-input-inline">
+					<input id="maxcount" class="layui-input newsTime" lay-verify="required|date"
+						placeholder="请输入团人数上限，默认50" type="text">
+				</div>
+			</div>
+
+		</div>
+		<div>
+			<label class="layui-form-label">产品：</label>
+			<select id="xuanpro" class="layui-input pro-xuan" style="width: 120px;margin-bottom: 10px">
+				<option value=""></option>
+			</select>
+		</div>
+		<!-- visibility: hidden; -->
+		<input id="gId" type="text" style=" display:none">
+		<input id="pId" type="text" style=" display:none">
+		<input id="status" type="text" style=" display:none">
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				<button type="reset" class="layui-btn layui-btn-primary" id="btn-back">返回</button>
+			</div>
+		</div>
+	</form>
+	<button id="btn-save" >立即提交</button>
+	<script type="text/javascript" src="common/layui/layui.js"></script>
+	<script type="text/javascript" src="js/newsadd.js"></script>
+	<script type="text/javascript">
+		
+	$(function(){
+		doLoadUI("#btn-back","group/doGroupsUI.do")
+		doLoadEmp();
+		doLoadPro();
+		doLoadupdate();
+		$("#btn-save").click(doSaveObject);
+	})
+	//异步加载分页信息
+	function doLoadUI(id,url){
+		$(id).click(function(){
+			$("#mainContentId").removeData();
+			$("#mainContentId").load(url);
+		});
+	}
+	//
+	function doLoadupdate(){
+		var url="group/updateFind.do"
+			$.getJSON(url,function(result){
+			if(result.state==1){
+				doInitFormData();//修改时
+			}else{
+				alert(result.message);
+			}
+		})
+	}
+	function doInitFormData(){
+		var data=$("#mainContentId").data("rowData");
+	     if(!data)return;
+		 console.log(data);
+		 //初始化信息 
+		 $("#nowcount").val(data.nowcount);
+		 $("#maxcount").val(data.maxcount);
+		 $("#gId").val(data.id);
+		 $("#pId").val(data.productId);
+		 $("#status").val(data.status);
+		 display("xuanname",data.sysEmp[0].id);
+		 display("xuanpro",data.productId)
+	}
+	function display(id,num){
+		var opt = document.getElementById(id).options;
+		for (i=0; i<opt.length; i++){
+		    if (opt[i].id == num)
+		    {
+		    	opt[i].selected = true;
+		    }
+		}
+	}
+	
+	//保存数据
+	function doSaveObject(){
+		var guideId;
+		var productId;
+		var obj=document.getElementById("xuanname");
+        for(i=0;i<obj.length;i++) {//下拉框的长度就是它的选项数.
+           if(obj[i].selected==true) {
+        	   guideId=obj[i].value;//获取当前选择项的值.
+　　　　　　}
+　　　　}
+        obj=document.getElementById("xuanpro");
+        for(i=0;i<obj.length;i++) {//下拉框的长度就是它的选项数.
+           if(obj[i].selected==true) {
+        	   productId=obj[i].value;//获取当前选择项的值.
+　　　　　　}
+　　　　}
+        console.log(guideId+"++"+productId)
+		var url="group/doSaveGroup.do";
+		var params={
+				"id":document.getElementById("gId").value,
+				"guideId":guideId,
+				"productId":productId,
+				"nowcount":document.getElementById("nowcount").value,
+				"maxcount":document.getElementById("maxcount").value,
+				"status":document.getElementById("status").value
+		}
+		console.log(params)
+		$.post(url,params,function(result){
+			console.log(result)
+			if(result.state==1){
+				 alert(result.message);
+				 $("#mainContentId").load("group/doGroupsUI.do");
+			 }else{
+				 alert(result.message);
+			 }
+		});
+	}
+	//页面加载完成后加载导游信息
+	function doLoadEmp(){
+		var url="group/doFindEmps.do";
+		$.getJSON(url,function(result){
+			if(result.state==1){
+				//初始化角色信息
+				doInitEmp(result.data);
+			}else{
+				alert(result.message);
+			}
+		});
+	}
+	function doLoadPro(){
+		var url="group/doFindPros.do";
+		$.getJSON(url,function(result){
+			if(result.state==1){
+				//初始化信息
+				doInitPro(result.data);
+			}else{
+				alert(result.message);
+			}
+		});
+	}
+	function doInitEmp(data){
+		var div=$("#xuanname");
+		var option=
+		"<option id='[id]' value='[id1]' name='eItem'>[name]</option>";
+		for (var s in data) {
+			div.append(
+			option.replace("[id]",data[s].id)
+					.replace("[id1]",data[s].id)
+				  .replace("[name]",data[s].name))
+		}
+	}
+	function doInitPro(data){
+		var div=$("#xuanpro");
+		var option=
+		"<option id='[id]' value='[id1]' name='pItem'>[productName]</option>";
+		for (var s in data) {
+			div.append(
+			option.replace("[id]",data[s].id)
+					.replace("[id1]",data[s].id)
+				  .replace("[productName]",data[s].productName))
+		}
+	}
+	
+	</script>
+</body>

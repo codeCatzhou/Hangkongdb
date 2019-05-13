@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.view.dao.ViewFightDao">
+	<resultMap type="com.hk.view.vo.ViewFightSeat" id="findS">
+		<!-- 关联查询 -->
+		<association property="sysSeat" column="fightId"
+			select="com.hk.sys.dao.SysSeatDao.findSeatByFightId"></association>
+	</resultMap>
+	
+	<select id="findFightByAdd" resultMap="findS">
+		select * from sys_fight
+		<include refid="searchfight"/>
+		order by creatTime 
+		limit #{startIndex},#{pageSize}
+	</select>
+	
+	<!-- 查询航班状态 -->
+	<select id="checkFight" resultType="com.hk.sys.entity.SysFight">
+		select * from sys_fight where fightId=#{fightId}
+	</select>
+	
+	<select id="findFightSeatByFightId" resultMap="findS">
+		select * from sys_fight where fightId=#{fightId}
+	</select>
+	
+	<select id="findFight" resultType="int">
+		select count(*) from sys_fight
+		<include refid="searchfight"/>
+	</select>
+	
+	<select id="fightById" resultType="com.hk.sys.entity.SysFight">
+		select * from sys_fight where fightId=#{fightId}
+	</select>
+	
+	<sql id="searchfight">
+		<where>
+			status=0
+			<if test="fromAdd !=null and fromAdd !=''">and fromAdd=#{fromAdd}</if>
+			<if test="toAdd !=null and toAdd !=''">and toAdd=#{toAdd}</if>
+			<if test="startTime !=null and startTime !=''">and startTime like #{startTime}</if>
+		</where>
+	</sql>
+
+</mapper>

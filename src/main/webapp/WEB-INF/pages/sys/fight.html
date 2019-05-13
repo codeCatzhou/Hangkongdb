@@ -1,0 +1,242 @@
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<div class="layui-tab">
+			<blockquote class="layui-elem-quote news_search">
+
+				<div class="layui-inline">
+					<div class="layui-input-inline">
+						<input id="fromAdd" placeholder="请输入出发地"
+							class="layui-input search_input" type="text"> <input
+							id="toAdd" placeholder="请输入目的地" class="layui-input search_input"
+							type="text">
+					</div>
+					<a id="checkname" class="layui-btn btn-search">查询</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn layui-btn-normal btn-add">添加</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn btn-update" style="background-color: #5FB878">修改</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn layui-btn-danger btn-delete">删除</a>
+				</div>
+			</blockquote>
+
+			<div
+				class="layui-tab-content larry-personal-body clearfix mylog-info-box">
+				<!-- 操作日志 -->
+				<div class="layui-tab-item layui-field-box layui-show">
+					<table class="layui-table table-hover" lay-even="" lay-skin="nob">
+						<thead>
+							<tr>
+								<th><input type="checkbox" id="checkAll"></th>
+								<th>ID</th>
+								<th>航班编号</th>
+								<th>出发地</th>
+								<th>目的地</th>
+								<th>出发时间</th>
+								<th>到达时间</th>
+								<th>航班状态</th>
+								<th>航班创建时间</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbodyId">
+							<tr>
+								<td colspan="7">数据加载中...</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="larry-table-page clearfix">
+						<div id="pageId" class="pageId"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="common/layui/layui.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pageId").load("doPageUI.do", function() {
+			doGetObjects();
+		});
+		//查询
+		$(".layui-inline").on("click", ".btn-search", doGetObjects);
+		//点击添加
+		$(".layui-inline").on("click", ".btn-add", doLoadEditUI)
+		//状态修改
+		$("#tbodyId").on("click", ".btn-status", doStatusId);
+		//删除
+		$(".layui-inline").on("click", ".btn-delete", doDeleteUI);
+		//修改
+		$(".layui-inline").on("click", ".btn-update", doupdateUI)
+		//$("thead").on("change", "#checkAll", doChangeTBodyCheckBoxState);
+		//$("#tbodyId").on("change", ".cBox", doChangeTHeadCheckBoxState);
+	});
+	//修改
+	function doupdateUI(){
+		var id;
+		//获取tbody中所有的checkbox
+		$("#tbodyId input[type='checkbox']").each(function(){
+			if($(this).prop("checked")){
+				id=$(this).val();
+			}
+		});
+		if(!id){
+			alert("请选择修改的信息");
+			return;
+		}
+		updateObject(id);
+		var url="fight/doFightEditUI.do";
+		  $("#mainContentId").load(url);
+	}
+	function updateObject(id){
+		var url="fight/updateFind.do";
+		var params={"id":id}
+		console.log("id:"+id)
+		$.getJSON(url,params,function(result){//JsonResult
+			   console.log(result)
+			   if(result.state==1){
+				  $("#mainContentId").data("rowData",result.data);
+			   }else{
+				  alert(result.message);
+			   }
+		});
+	}
+	//删除
+	function doDeleteUI(){
+		//1.url
+		var url ="fight/dodeleteUI.do"
+		//2.params
+		var ids=doGetCheckedIds();
+		var params={"ids":ids.toString()}
+		//3.send request
+		var mos =confirm("确定要删除选中的"+ids.length+"条数据？");
+		if(mos == true){
+			$.post(url,params,function(result){
+				if (result.state == 1) {
+					alert(result.message);
+					doGetObjects();
+				} else{
+					alert(result.message);
+				}
+			});
+		}else{
+			alert("操作已取消");
+		}
+	}
+	// 获取用户选中的checked对应的id
+	function doGetCheckedIds(){
+		//1.定义数组,用于存储选中的checked的值
+		var array=[];
+		//2.获取tbody中所有的checkbox
+		$("#tbodyId input[type='checkbox']").each(function(){
+			// .each()迭代所有的CheckBox
+			//存储选中的checkbox的值
+			//$(this)代表当前checkbox对象
+			if($(this).prop("checked")){
+				array.push($(this).val());
+			}
+		});
+		return array;
+	}
+	
+	//修改航班状态
+	function doStatusId() {
+		var btn = $(this);//this执行调用dom对象
+		var fight = btn.parents("tr").data("rowData");
+		var fightId = fight.fightId;
+		var status = fight.status;
+		//2.构建url,参数对象
+		var url = "fight/doStatus.do";
+		var params = {
+			"fightId" : fightId,
+			"status" : status ? 0 : 1
+		}
+		console.log(params)
+		//3.发送异步请求,更新数据
+		$.post(url, params, function(result) {
+			if (result.state == 1) {
+				alert(result.message);
+				doEditRow(btn,status)
+			} else {
+				alert(result.message);
+			}
+		})
+	}
+	
+	function doEditRow(obj,status){
+		   //1.修改内容
+		   $(obj).html(status?"起航":"待命");
+		   var tr=$(obj).parents("tr");
+		   tr.find("td:eq(7)").text(status?"待命":"起航");
+		   //3.获取当前行tr对象，然后重新绑定新的值
+		   var fight=tr.data("rowData")
+		   fight.status=status?0:1;
+		   tr.data("rowData",fight);
+	   }
+	
+	//加载添加页面
+	function doLoadEditUI(){
+		//$("#mainContentId").removeData();
+		var url = "fight/doFightEditUI.do"
+		$("#mainContentId").load(url)
+	}
+
+	//回显数据
+	function doGetObjects() {
+		var url = "fight/doFindPageObjects.do";
+		var pageCurrent = $("#pageId").data("pageCurrent");
+		if (!pageCurrent)
+			pageCurrent = 1;
+		var params = {
+			"pageCurrent" : pageCurrent
+		};
+		params.fromAdd = $("#fromAdd").val().trim();
+		params.toAdd = $("#toAdd").val().trim();
+		$.getJSON(url, params, function(result) {
+			doHandleResponseResult(result);
+		});
+	}
+	function doHandleResponseResult(result) {
+		if (result.state) {
+			doSetTableBodyRows(result.data.records);
+			doSetPagination(result.data);
+		} else {
+			alert(result.message);
+		}
+	}
+	function doSetTableBodyRows(records) {
+		//1.获取body对象,并清空内容
+		var tBody = $("#tbodyId");
+		tBody.empty();
+		//2.迭代records元素,将内容添加到body
+		for ( var i in records) {
+			//2.1.创建tr对象
+			var tr = $("<tr></tr>");
+			tr.data("rowData", records[i]);
+			//2.2创建td元素
+			var tds = doCreateTds(records[i]);
+			//2.3将tr追加到tr中
+			tr.append(tds);
+			//2.4将tr追加到tbody中
+			tBody.append(tr);
+		}
+	}
+	function doCreateTds(data) {
+		var tds = "<td><input type='checkbox' class='cBox' name='checkItem' value='"+data.id+"'/></td>"
+				+ "<td>"+ data.id+ "</td>"
+				+ "<td>"+ data.fightId+ "</td>"
+				+ "<td>"+ data.fromAdd+ "</td>"
+				+ "<td>"+ data.toAdd+ "</td>"
+				+ "<td>"+ new Date(data.startTime).toLocaleString()+ "</td>"
+				+ "<td>"+ new Date(data.arrTime).toLocaleString()+ "</td>"
+				+ "<td>"+ (data.status ? '已出' : '待命')+ "</td>"
+				+ "<td>"+ new Date(data.creatTime).toLocaleString()+ "</td>"
+				+ "<td><button type='button' class='btn btn-default btn-status'>"
+				+ (data.status ? '待定' : '起航') + "</button></td>";
+		return tds;
+	}
+</script>

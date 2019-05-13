@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.sys.dao.SysFightDao">
+	
+	<!-- 更新 -->
+	<update id="updateFight" parameterType="com.hk.sys.entity.SysFight">
+		update sys_fight set
+		fightId=#{fightId},fromAdd=#{fromAdd},toAdd=#{toAdd},startTime=#{startTime},arrTime=#{arrTime}
+		where
+		id=#{id}
+	</update>
+	
+	<!-- 修改信息查找 -->
+	<select id="updateFind" resultType="com.hk.sys.entity.SysFight">
+		select * from sys_fight where id=#{id}
+	</select>
+
+	<select id="findByIds" resultType="com.hk.sys.entity.SysFight">
+		select * from sys_fight where id in
+		<foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>
+	</select>
+	<!-- 验证航班编号 -->
+	<select id="findByFightId" resultType="int">
+		select count(*) from sys_fight where fightId=#{fightId}
+	</select>
+	<!-- 删除 -->
+	<delete id="deleteByIds">
+		delete from sys_fight where id in
+		<foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>
+	</delete>
+	<!-- 添加  -->
+	<insert id="insertfight" parameterType="com.hk.sys.entity.SysFight" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into sys_fight
+		(id,fightId,fromAdd,toAdd,startTime,arrTime,status,creatTime)
+		values
+		(null,#{fightId},#{fromAdd},#{toAdd},#{startTime},#{arrTime},0,now())
+	</insert>
+	<!-- 修改状态 -->
+	<update id="updateStatus">
+		update sys_fight set status=#{status} where fightId=#{fightId}
+	</update>
+   <!-- 查询所有记录 -->
+   <select id="dofindbyadd" resultType="com.hk.sys.entity.SysFight">
+   		select id,fightId,fromAdd,toAdd,startTime,arrTime,status,creatTime
+   		from sys_fight
+   		<include refid="findadd"/>
+   		order by creatTime desc
+   		limit #{startIndex} ,#{pageSize}
+   </select>
+   
+   	<!-- 分页 -->
+	<select id="getRowCount" resultType="int">
+          select count(*) from sys_fight
+          <include refid="findadd"/>
+    </select>
+   
+   <sql id="findadd">
+   		<where>
+   			<if test="fromAdd !=null and fromAdd !=''">
+   				fromAdd=#{fromAdd}
+   			</if>
+   			<if test="fromAdd !=null and fromAdd !='' and toAdd !=null and toAdd !=''">
+   				and
+   			</if>
+   			<if test="toAdd !=null and toAdd !=''">
+   				toAdd=#{toAdd}
+   			</if>
+   		</where>
+   </sql>
+</mapper>

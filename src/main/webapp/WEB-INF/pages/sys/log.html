@@ -1,0 +1,100 @@
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<div class="layui-tab">
+			<blockquote class="layui-elem-quote news_search">
+
+				<div class="layui-inline">
+					<div class="layui-input-inline">
+						<input id="username" placeholder="请输入账户名"
+							class="layui-input search_input" type="text">
+					</div>
+					<a id="checkname" class="layui-btn btn-search">查询</a>
+				</div>
+			</blockquote>
+
+			<div
+				class="layui-tab-content larry-personal-body clearfix mylog-info-box">
+				<!-- 操作日志 -->
+				<div class="layui-tab-item layui-field-box layui-show">
+					<table class="layui-table table-hover" lay-even="" lay-skin="nob">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>操作账号</th>
+								<th>操作内容</th>
+								<th>操作时间</th>
+							</tr>
+						</thead>
+						<tbody id="tbodyId">
+							<tr>
+								<td colspan="5">数据加载中...</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="larry-table-page clearfix">
+						<div id="pageId" class="pageId"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="common/layui/layui.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pageId").load("doPageUI.do", function() {
+			doGetObjects();
+		});
+		//查询
+		$(".layui-inline").on("click", ".btn-search", doGetObjects);
+		
+	});
+
+	//回显数据
+	function doGetObjects() {
+		var url = "log/doFindLog.do";
+		var pageCurrent = $("#pageId").data("pageCurrent");
+		if (!pageCurrent)
+			pageCurrent = 1;
+		var params = {
+			"pageCurrent" : pageCurrent
+		};
+		params.username = $("#username").val().trim();
+		$.getJSON(url, params, function(result) {
+			console.log(result)
+			doHandleResponseResult(result);
+		});
+	}
+	function doHandleResponseResult(result) {
+		if (result.state) {
+			doSetTableBodyRows(result.data.records);
+			doSetPagination(result.data);
+		} else {
+			alert(result.message);
+		}
+	}
+	function doSetTableBodyRows(records) {
+		//1.获取body对象,并清空内容
+		var tBody = $("#tbodyId");
+		tBody.empty();
+		//2.迭代records元素,将内容添加到body
+		for ( var i in records) {
+			//2.1.创建tr对象
+			var tr = $("<tr></tr>");
+			tr.data("rowData", records[i]);
+			//2.2创建td元素
+			var tds = doCreateTds(records[i]);
+			//2.3将tr追加到tr中
+			tr.append(tds);
+			//2.4将tr追加到tbody中
+			tBody.append(tr);
+		}
+	}
+	function doCreateTds(data) {
+		var tds = "<td>"+ data.id+ "</td>"
+				+ "<td>"+ data.username+ "</td>"
+				+ "<td>"+ data.operation+ "</td>"
+				+ "<td>"+ new Date(data.createdTime).toLocaleString()+ "</td>";
+		return tds;
+	}
+</script>

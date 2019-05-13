@@ -1,0 +1,261 @@
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<div class="layui-tab">
+			<blockquote class="layui-elem-quote news_search">
+
+				<div class="layui-inline">
+					<div class="layui-input-inline">
+						<input id="searchNameId" placeholder="请输入导游姓名"
+							class="layui-input search_input" type="text">
+					</div>
+					<a id="checkname" class="layui-btn btn-search">查询</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn layui-btn-normal btn-newsAdd">添加</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn btn-update" style="background-color: #5FB878">修改</a>
+				</div>
+				<div class="layui-inline">
+					<a class="layui-btn layui-btn-danger btn-delete">删除</a>
+				</div>
+			</blockquote>
+
+			<div
+				class="layui-tab-content larry-personal-body clearfix mylog-info-box">
+				<!-- 操作日志 -->
+				<div class="layui-tab-item layui-field-box layui-show">
+					<table class="layui-table table-hover" lay-even="" lay-skin="nob">
+						<thead>
+							<tr>
+								<th><input type="checkbox" id="checkAll"></th>
+								<th>ID</th>
+								<th>导游姓名</th>
+								<th>团现人数</th>
+								<th>团限人数</th>
+								<th>产品ID</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbodyId">
+							<tr>
+							<td colspan="7">数据加载中...</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="larry-table-page clearfix">
+						<div id="pageId" class="pageId"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script type="text/javascript" src="common/layui/layui.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#pageId").load("doPageUI.do", function() {
+			doGetObjects();
+		});
+		//点击添加
+		$(".layui-inline").on("click", ".btn-newsAdd", doLoadEditUI)
+		//状态修改
+		$("#tbodyId").on("click", ".btn-status", doStatusId);
+		//删除
+		$(".layui-inline").on("click", ".btn-delete", doDeleteUI);
+		//修改
+		$(".layui-inline").on("click",".btn-update",doupdateUI)
+		//查询
+		$(".layui-inline").on("click", ".btn-search", doSearchUI);
+		$("thead").on("change","#checkAll",doChangeTBodyCheckBoxState);
+		$("#tbodyId").on("change",".cBox",doChangeTHeadCheckBoxState);
+	});
+	
+	function doupdateUI(){
+		var id;
+		//2.获取tbody中所有的checkbox
+		$("#tbodyId input[type='checkbox']").each(function(){
+			if($(this).prop("checked")){
+				id=$(this).val();
+			}
+		});
+		console.log("id:"+id)
+		if(!id){
+			alert("请选择修改的信息");
+			return;
+		}
+		updateObject(id);
+		var url="group/doGroupEditUI.do";
+		  $("#mainContentId").load(url);
+	}
+	function updateObject(id){
+		var url="group/updateFind.do";
+		var params={"id":id}
+		/* console.log(params) */
+		$.getJSON(url,params,function(result){//JsonResult
+			   if(result.state==1){
+				  $("#mainContentId").data("rowData",result.data); 
+			   }else{
+				  alert(result.message);
+			   }
+		});
+	}
+	
+	
+	function doSearchUI(){
+		console.log(params)
+		var url="group/dosearchUI.do";
+		var pageCurrent = $("#pageId").data("pageCurrent");
+		if (!pageCurrent)
+			pageCurrent = 1;
+		var params = {"pageCurrent" : pageCurrent};
+		params.name=$("#searchNameId").val().trim();
+		$.post(url,params,function(result){
+			if (result.state == 1) {
+				/* alert(result.message); */
+				doHandleResponseResult(result);
+			} else{
+				alert(result.message);
+			} 
+		})
+	}
+
+	// 基于thead中checkbox对象状态修改checkbox中对象状态
+	function doChangeTBodyCheckBoxState(){
+		//获取thead中checkbox对象状态
+		var flag=$("#checkAll").prop("checked")
+		//修改tbody中checkbox对象状态
+		$("#tbodyId input[type='checkbox']").each(function(){
+			$(this).prop("checked",flag);
+		});
+	}
+	
+	function doChangeTHeadCheckBoxState(){
+		//获取tbody中所有checkbox对象状态相与的结果
+		var flag=true;
+		$("#tbodyId input[type='checkbox']").each(function(){
+			flag=flag&&$(this).prop("checked");
+		});
+		//修改thead中checkbox对象状态
+		$("#checkAll").prop("checked",flag);
+	}
+	
+	// 获取用户选中的checked对应的id
+	function doGetCheckedIds(){
+		//1.定义数组,用于存储选中的checked的值
+		var array=[];
+		//2.获取tbody中所有的checkbox
+		$("#tbodyId input[type='checkbox']").each(function(){
+			// .each()迭代所有的CheckBox
+			//存储选中的checkbox的值
+			//$(this)代表当前checkbox对象
+			if($(this).prop("checked")){
+				array.push($(this).val());
+			}
+		});
+		return array;
+	}
+	
+	function doDeleteUI(){
+		console.log("sss")
+		//1.url
+		var url ="group/dodeleteUI.do"
+		//2.params
+		var ids=doGetCheckedIds();
+		var params={"ids":ids.toString()}
+		//3.send request
+		var mos =confirm("确定要删除选中的"+ids.length+"条数据？");
+		if(mos == true){
+			$.post(url,params,function(result){
+				if (result.state == 1) {
+					alert(result.message);
+					doGetObjects();
+				} else{
+					alert(result.message);
+				}
+			});
+		}else{
+			alert("操作已取消");
+		}
+	}
+
+	function doGetObjects() {
+		var url = "group/doFindPageObjects.do";
+		var pageCurrent = $("#pageId").data("pageCurrent");
+		if (!pageCurrent)
+			pageCurrent = 1;
+		var params = {"pageCurrent" : pageCurrent};
+		params.name=$("#searchNameId").val().trim();
+		$.getJSON(url, params, function(result) {
+			doHandleResponseResult(result);
+		});
+	}
+	function doHandleResponseResult(result) {
+		if (result.state == 1) {
+			doSetTableBodyRows(result.data.records);
+			doSetPagination(result.data);
+		} else {
+			alert(result.message);
+		}
+	}
+	function doSetTableBodyRows(records) {
+		//1.获取body对象,并清空内容
+		var tBody = $("#tbodyId");
+		tBody.empty();
+		//2.迭代records元素,将内容添加到body
+		for ( var i in records) {
+			//2.1.创建tr对象
+			var tr = $("<tr></tr>");
+			tr.data("rowData", records[i]);
+			//2.2创建td元素
+			var tds = doCreateTds(records[i]);
+			//2.3将tr追加到tr中
+			tr.append(tds);
+			//2.4将tr追加到tbody中
+			tBody.append(tr);
+		}
+	}
+	function doCreateTds(data) {
+		
+		var tds = "<td><input type='checkbox' class='cBox' name='checkItem' value='"+data.id+"'/></td>"
+				+ "<td>"+ data.id+ "</td>"
+				+ "<td>"+ data.sysEmp[0].name+ "</td>"
+				+ "<td>"+ data.nowcount+ "</td>"
+				+ "<td>"+ data.maxcount+ "</td>"
+				+ "<td>"+ data.productId+ "</td>"
+				+ "<td>"+ (data.status ? '已出' : '就绪')+ "</td>"
+				+ "<td><button type='button' class='btn btn-default btn-status'>"
+				+ (data.status ? '待定' : '启用') + "</button></td>";
+		return tds;
+	}
+
+	//状态修改
+	function doStatusId() {
+		var btn = $(this);//this执行调用dom对象
+		var group = btn.parents("tr").data("rowData");
+		var id = group.id;
+		var status = group.status;
+		//2.构建url,参数对象
+		var url = "group/dostatusId.do";
+		var params = {
+			"id" : id,
+			"status" : status ? 0 : 1
+		}
+		//3.发送异步请求,更新数据
+		$.post(url, params, function(result) {
+			if (result.state == 1) {
+				alert(result.message);
+				doGetObjects();//重新刷新
+			} else {
+				alert(result.message);
+			}
+		})
+	}
+	//加载添加页面
+	function doLoadEditUI() {
+		$("#mainContentId").removeData();
+		var url = "group/doGroupEditUI.do"
+		$("#mainContentId").load(url)
+	}
+</script>

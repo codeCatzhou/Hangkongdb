@@ -1,0 +1,96 @@
+<section class="layui-larry-box">
+	<div class="larry-personal">
+		<header class="larry-personal-tit">
+			<span>修改密码</span>
+		</header><!-- /header -->
+		<div class="larry-personal-body clearfix changepwd">
+			<form class="layui-form col-lg-4" method="post" action="">
+			 	<div class="layui-form-item">
+					<label class="layui-form-label">用户名</label>
+					<div class="layui-input-block">  
+					  	<input type="text" name="title"  autocomplete="off"  class="layui-input layui-disabled" disabled="disabled" >
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">旧密码</label>
+					<div class="layui-input-block">  
+					  	<input type="password" name="title"  autocomplete="off"  class="layui-input oldpw" value="" placeholder="请输入旧密码">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">新密码</label>
+					<div class="layui-input-block">  
+					  	<input type="password" name="title"  autocomplete="off"  class="layui-input newpw1" value="" placeholder="请输入新密码">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">确认密码</label>
+					<div class="layui-input-block">  
+					  	<input type="password" name="title"  autocomplete="off"  class="layui-input newpw2" value="" placeholder="请输入确认新密码">
+					</div>
+				</div>
+				
+			</form>
+		</div>
+	</div>
+	<div class="layui-input-block">
+			<button class="layui-btn btn-save">立即提交</button>
+			<button class="layui-btn btn-primary">重置</button>
+	</div>
+	<div class="layui-input-block" style=" margin-top: 10px">
+			<button class="layui-btn btn-back" style=" background: #CCCCCC;color: black;">返回</button>
+	</div>
+</section>
+<script type="text/javascript" src="common/layui/layui.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$(".layui-disabled").val(getQueryString("username"))
+		$(".layui-input-block").on("click", ".btn-save", doSaveOrUpdate)
+		$(".layui-input-block").on("click", ".btn-primary", removeDate)
+		$(".layui-input-block").on("click", ".btn-back", doCancel)
+	})
+	function doSaveOrUpdate(){
+		var params={
+			username:$(".layui-disabled").val(),
+			oldpw:$(".oldpw").val(),
+			newpw1:$(".newpw1").val(),
+			newpw2:$(".newpw2").val()
+		}
+		var url="admin/updatePwd.do";
+		$.post(url,params,function(result){
+			console.log(result)
+				if(result.state==1){
+					 alert(result.message);
+					 doCancel();
+				 }else{
+					alert(result.message);
+				 }
+		})
+	}
+	//返回
+	function doCancel(){
+		console.log("woss")
+		window.location.href ="doIndexUI.do"
+	}
+	//重置输入框
+	function removeDate(){
+		$(".oldpw").val("");
+		$(".newpw1").val("");
+		$(".newpw2").val("");
+	}
+	
+	//从url获取用户名
+	function getQueryString(name) {
+		    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+		    var reg_rewrite = new RegExp("(^|/)" + name + "/([^/]*)(/|$)", "i");
+		    var r = window.location.search.substr(1).match(reg);
+		    var q = window.location.pathname.substr(1).match(reg_rewrite);
+		    if(r != null){
+		        return unescape(r[2]);
+		    }else if(q != null){
+		        return unescape(q[2]);
+		    }else{
+		        return null;
+		    }
+		}
+</script>

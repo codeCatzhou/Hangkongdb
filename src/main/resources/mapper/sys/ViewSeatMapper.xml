@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.view.dao.ViewSeatDao">
+	<!-- 一等座查询，更新 -->
+	<select id="findFnumberByFightId" resultType="int">
+		select fnumbers from sys_seat where fightId=#{fightId}
+	</select>
+	<update id="updateFsByFightId">
+		update sys_seat set
+		fnumbers=(fnumbers-1)
+		where
+		fightId=#{fightId}
+	</update>
+	<!-- 二等座查询，更新 -->
+	<select id="findSnumberByFightId" resultType="int">
+		select snumbers from sys_seat where fightId=#{fightId}
+	</select>
+	<update id="updateSsByFightId">
+		update sys_seat set
+		snumbers=(snumbers-1)
+		where
+		fightId=#{fightId}
+	</update>
+	<!-- 三等座查询，更新 -->
+	<select id="findOnumberByFightId" resultType="int">
+		select onumbers from sys_seat where fightId=#{fightId}
+	</select>
+	<update id="updateOsByFightId">
+		update sys_seat set
+		onumbers=(onumbers-1)
+		where
+		fightId=#{fightId}
+	</update>
+</mapper>

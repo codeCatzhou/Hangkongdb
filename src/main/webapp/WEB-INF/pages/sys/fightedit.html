@@ -1,0 +1,272 @@
+<body>
+	<form>
+		<div class="addbody">
+			<label class="layui-form-label">航班编号：</label>
+			<div class="layui-input-inline">
+				<input id="setfightId" class="layui-input newsAuthor" lay-verify="required"
+						placeholder="请输航班编号" type="text" style="margin-bottom: 20px">
+			</div>
+		
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">出发地点：</label>
+				<div class="layui-input-inline">
+					<input id="setfromAdd" class="layui-input" lay-verify="required"
+						placeholder="请输入出发城市" type="text">
+				</div>
+				<label class="layui-form-label">目的地：</label>
+				<div class="layui-input-inline">
+					<input id="settoAdd" class="layui-input" lay-verify="required|date"
+						placeholder="请输入要到达的地名" type="text">
+				</div>
+			</div>
+			<div class="layui-inline">
+				<label class="layui-form-label">出发时间：</label>
+				<div class="layui-input-inline">
+					<input id="setstartTime" class="layui-input" lay-verify="required|date"
+						type="datetime-local" step="01">
+				</div>
+				<label class="layui-form-label">到达时间：</label>
+				<div class="layui-input-inline">
+					<input id="setarrTime" class="layui-input" lay-verify="required|date"
+						 type="datetime-local" step="01">
+				</div>
+			</div>
+
+		</div>
+		<div class="npcombo">
+			<label class="layui-form-label">一等座：</label>
+			<input id="setfnumbers" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" value="0">
+			<label class="layui-form-label">价格：</label>
+			<input id="setfprice" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" value="0">
+		</div>
+		
+		<div class="npcombo">
+			<label class="layui-form-label">二等座：</label>
+			<input id="setsnumbers" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" value="0">
+			<label class="layui-form-label">价格：</label>
+			<input id="setsprice" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" value="0">
+		</div>
+		
+		<div class="npcombo">
+			<label class="layui-form-label">三等座：</label>
+			<input id="setonumbers" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" value="0">
+			<label class="layui-form-label">价格：</label>
+			<input id="setoprice" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" value="0">
+		</div>
+		<div class="npcombo">
+			<label class="layui-form-label">折扣：</label>
+			<input id="setrebate" class="layui-input npcombos" lay-verify="required|date"
+				 type="number" min="0" max="1" value="0" step="0.01">
+		</div>
+	</div>
+		<!-- visibility: hidden; -->
+		<input id="gId" type="text" style=" display:none">
+		<input id="pId" type="text" style=" display:none">
+		<input id="status" type="text" style=" display:none">
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				<button type="reset" class="layui-btn layui-btn-primary" id="btn-back">返回</button>
+			</div>
+		</div>
+	</form>
+	<button id="btn-save" >立即提交</button>
+	<input id="Fid" type="text" style=" display: none">
+	<input id="Sid" type="text" style=" display: none">
+	<script type="text/javascript" src="common/layui/layui.js"></script>
+	<script type="text/javascript" src="js/newsadd.js"></script>
+	<script type="text/javascript">
+		
+	$(function(){
+		doLoadUI("#btn-back","fight/doFightUI.do")
+		upTime("#setstartTime",0);
+		upTime("#setarrTime",0);//初始化时间控件
+		doLoadupdate();//初始化数据
+		$("#btn-save").click(doSaveObject);
+	})
+	//异步加载分页信息
+	function doLoadUI(id,url){
+		$(id).click(function(){
+			$("#mainContentId").removeData();
+			$("#mainContentId").load(url);
+		});
+	}
+	 function doLoadupdate(){
+		 var url="fight/updateFind.do";
+		 $.getJSON(url,function(result){
+			 if(result.state==1){
+				 doInitFormData();
+			 }else{
+				alert(result.message);
+			 }
+		 })
+	 }
+	//初始化信息
+	function doInitFormData(){
+		 var data=$("#mainContentId").data("rowData");
+	     if(!data)return;
+		 //初始化信息 
+		 $("#Fid").val(data.id);
+		 $("#setfightId").val(data.fightId);
+		 $("#setfromAdd").val(data.fromAdd);
+		 $("#settoAdd").val(data.toAdd);
+		 upTime("#setstartTime",new Date(data.startTime));
+		 upTime("#setarrTime",new Date(data.arrTime));
+		 
+		 //加载座位信息
+		 var fightId=data.fightId;
+		 var params={"fightId":fightId}
+		 var url="seat/FindSeatByFightId.do"
+		 $.post(url,params,function(result){
+				if(result.state==1){
+					$("#Sid").val(result.data.id)
+					$("#setfnumbers").val(result.data.fnumbers);
+					$("#setfprice").val(result.data.fprice);
+					$("#setsnumbers").val(result.data.snumbers);
+					$("#setsprice").val(result.data.sprice);
+					$("#setonumbers").val(result.data.onumbers);
+					$("#setoprice").val(result.data.oprice);
+					$("#setrebate").val(result.data.rebate)
+				 }else{
+					 alert(result.message);
+				 }
+			});
+	}
+	
+	//初始化时间
+	function upTime(set,now){
+		if(now==0){
+			now = new Date();
+		}
+		year = now.getFullYear(),
+		month = ((now.getMonth() + 1)>9)?(now.getMonth() + 1):("0"+(now.getMonth() + 1)),
+		date = translate(now.getDate()),
+		hour = translate(now.getHours()),
+		minute = translate(now.getMinutes()),
+		second = translate(now.getSeconds());
+		function translate(prop){
+		if(prop <= 9){
+		return "0" + prop;
+		}else {
+		return prop
+		}
+		}
+		var dateString = year+"-"+month+"-"+date+"T"+hour+":"+minute+":"+second;
+		$(set).val(dateString);
+	}
+	//返回
+	function doback(){
+		 $("#mainContentId").load("fight/doFightUI.do");
+	}
+	
+	
+	//保存数据
+	function doSaveObject(){
+		var id=$("#Fid").val();
+		debugger
+		if(id!=""){
+			doUpdate();
+		}else{
+			doSaveObjects();
+		}
+	}
+	function doUpdate(){
+		//更新航班信息
+		var id=$("#Fid").val();
+		var fightId=$("#setfightId").val();
+		var fromAdd=$("#setfromAdd").val();
+		var toAdd=$("#settoAdd").val();
+		var startTime=new Date($("#setstartTime").val());
+		var arrTime=new Date($("#setarrTime").val());
+		console.log("测试："+id)
+		var params={
+				"id":id,"fightId":fightId,"fromAdd":fromAdd,
+				"toAdd":toAdd,"startTime":startTime,
+				"arrTime":arrTime
+		}
+		$.post("fight/doUpdateFight.do",params,function(result){
+			console.log(result)
+			if(result.state==1){
+				 alert(result.message);
+				 doUpdateSeat();
+				 $("#mainContentId").load("fight/doFightUI.do");
+			 }else{
+				 alert(result.message);
+			 }
+		});
+	}
+	function doUpdateSeat(){
+		//更新座位信息
+		var id=$("#Sid").val();
+		var fightId=$("#setfightId").val();
+		var fnumbers=$("#setfnumbers").val();
+		var fprice=$("#setfprice").val();
+		var snumbers=$("#setsnumbers").val();
+		var sprice=$("#setsprice").val();
+		var onumbers=$("#setonumbers").val();
+		var oprice=$("#setoprice").val();
+		var rebate=$("#setrebate").val();
+		var params={
+				"fightId":fightId,"id":id,
+				"fnumbers":fnumbers,"fprice":fprice,
+				"snumbers":snumbers,"sprice":sprice,
+				"onumbers":onumbers,"oprice":oprice,
+				"rebate":rebate
+		}
+		$.post("seat/doUpdateSeat.do",params,function(result){
+			console.log(result)
+			if(result.state==1){
+				 alert(result.message);
+			 }else{
+				 alert(result.message);
+			 }
+		});
+	}
+	
+	//添加
+	function doSaveObjects(){
+		var fightId=$("#setfightId").val();
+		var fromAdd=$("#setfromAdd").val();
+		var toAdd=$("#settoAdd").val();
+		var startTime=new Date($("#setstartTime").val());
+		var arrTime=new Date($("#setarrTime").val());
+		var fnumbers=$("#setfnumbers").val();
+		var fprice=$("#setfprice").val();
+		var snumbers=$("#setsnumbers").val();
+		var sprice=$("#setsprice").val();
+		var onumbers=$("#setonumbers").val();
+		var oprice=$("#setoprice").val();
+		var rebate=$("#setrebate").val();
+		var params={
+				"fightId":fightId,"fromAdd":fromAdd,
+				"toAdd":toAdd,"startTime":startTime,
+				"arrTime":arrTime,
+				"fnumbers":fnumbers,"fprice":fprice,
+				"snumbers":snumbers,"sprice":sprice,
+				"onumbers":onumbers,"oprice":oprice,
+				"rebate":rebate
+		}
+		var url="fight/doSaveObjects.do";
+		console.log(params)
+		$.post(url,params,function(result){
+			console.log(result)
+			if(result.state==1){
+				 alert(result.message);
+				 $("#mainContentId").load("fight/doFightUI.do");
+			 }else{
+				 alert(result.message);
+			 }
+		});
+	}
+	
+	
+	</script>
+</body>
